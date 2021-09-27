@@ -1,8 +1,12 @@
-const axios = require('axios');
 require('dotenv').config();
+const axios = require('axios');
+const cookieParser = require('cookie-parser');
 const express = require('express');
+const { secondsToMiliseconds } = require('./utils');
 const app = express();
 const port = 8080;
+
+app.use(cookieParser());
 
 app.get('/', (req, res) => {
   res.send('<a href="/login">login to spotify</a>');
@@ -45,7 +49,11 @@ app.get('/callback', (req, res) => {
     .then(({ data }) => {
       const params = new URLSearchParams({
         access_token: data.access_token,
-        refresh_token: data.refresh_token,
+      });
+
+      res.cookie('refresh_token', data.refresh_token, {
+        httpOnly: true,
+        maxAge: secondsToMiliseconds(3600 * 24 * 30), // expires after one month
       });
 
       res.redirect(`${process.env.FRONTEND_URL}?${params}`);
@@ -60,7 +68,7 @@ app.get('/refresh_token', (req, res) => {
 
   const params = new URLSearchParams({
     grant_type: 'refresh_token',
-    refresh_token: req.query.refresh_token,
+    refresh_token: req.cookies.refresh_token,
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET,
   });
@@ -72,7 +80,6 @@ app.get('/refresh_token', (req, res) => {
   axios
     .post(baseURL, params.toString(), { headers })
     .then(({ data }) => {
-      console.log(data);
       res.json(data);
     })
     .catch((error) => {
