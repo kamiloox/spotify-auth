@@ -8,7 +8,7 @@ const port = 8080;
 app.use(cookieParser());
 
 app.get('/', (req, res) => {
-  res.send('<a href="/login">login to spotify</a>');
+  res.send('<a href="/auth/login">login to spotify</a>');
 });
 
 app.get('/app', (req, res) => {
