@@ -1,6 +1,7 @@
 require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const express = require('express');
+const apiRouter = require('./routes/api');
 const authRouter = require('./routes/auth');
 const app = express();
 const port = 8080;
@@ -16,6 +17,7 @@ app.get('/app', (req, res) => {
 });
 
 app.use('/auth', authRouter);
+app.use('/api', apiRouter);
 
 app.listen(port, () => {
   console.log(`app is working on port: ${port}`);

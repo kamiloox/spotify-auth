@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { secondsToMiliseconds } = require('../../utils');
 
 module.exports = (req, res) => {
   const baseURL = 'https://accounts.spotify.com/api/token';
@@ -17,6 +18,11 @@ module.exports = (req, res) => {
   axios
     .post(baseURL, params.toString(), { headers })
     .then(({ data }) => {
+      res.cookie('access_token', data.access_token, {
+        httpOnly: true,
+        maxAge: secondsToMiliseconds(data.expires_in),
+      });
+
       res.json(data);
     })
     .catch((error) => {
