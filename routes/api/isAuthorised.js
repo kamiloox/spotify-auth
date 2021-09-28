@@ -3,5 +3,13 @@ module.exports = (req, res, next) => {
   if (req.cookies.access_token) {
     res.locals.authHeader = `Bearer ${req.cookies.access_token}`;
     next();
-  } else res.status(403).json({ error: 'Forbidden, no access_token' });
+  } else if (req.cookies.refresh_token)
+    res.redirect(`/auth/refresh_token?redirect_uri=${req.originalUrl}`);
+  else
+    res.status(403).json({
+      error: {
+        status: 403,
+        message: 'Request unauthorised',
+      },
+    });
 };

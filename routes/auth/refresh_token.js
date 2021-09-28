@@ -17,15 +17,16 @@ module.exports = (req, res) => {
 
   axios
     .post(baseURL, params.toString(), { headers })
-    .then(({ data }) => {
+    .then(({ data, status }) => {
       res.cookie('access_token', data.access_token, {
         httpOnly: true,
         maxAge: secondsToMiliseconds(data.expires_in),
       });
 
-      res.json(data);
+      if (req.query.redirect_uri) res.redirect(req.query.redirect_uri);
+      else res.status(status).json(data);
     })
-    .catch((error) => {
-      res.json(error.response.data);
+    .catch(({ response: { status, data } }) => {
+      res.status(status).json(data);
     });
 };
