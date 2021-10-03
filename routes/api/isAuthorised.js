@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
   } else if (req.cookies.refresh_token)
     res.redirect(`/auth/refresh_token?redirect_uri=${req.originalUrl}`);
   else
-    res.status(403).json({
+    res.json({
       error: {
         status: 403,
         message: 'Request unauthorised',

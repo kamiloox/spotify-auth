@@ -1,11 +1,10 @@
 const express = require('express');
+const catchAllRoutes = require('./catchAllRoutes');
 const isAuthorisedMiddleware = require('./isAuthorised');
-const meRoute = require('./me');
 
 const apiRouter = express.Router();
 
 apiRouter.use(isAuthorisedMiddleware);
-
-apiRouter.get('/me', meRoute);
+apiRouter.all('*', catchAllRoutes);
 
 module.exports = apiRouter;

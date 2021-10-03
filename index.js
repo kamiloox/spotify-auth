@@ -1,12 +1,14 @@
 require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const express = require('express');
+const cors = require('cors');
 const apiRouter = require('./routes/api');
 const authRouter = require('./routes/auth');
 const app = express();
 const port = 8080;
 
 app.use(cookieParser());
+app.use(cors({ credentials: true, origin: process.env.FRONTEND_URL }));
 
 app.get('/', (req, res) => {
   res.send('<a href="/auth/login">login to spotify</a>');
