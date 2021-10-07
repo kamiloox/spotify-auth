@@ -24,12 +24,17 @@ module.exports = (req, res) => {
         maxAge: secondsToMiliseconds(3600 * 24 * 30), // expires after one month
       });
 
+      const accessTokenMaxAge = secondsToMiliseconds(expires_in);
+
       res.cookie('access_token', access_token, {
         httpOnly: true,
-        maxAge: secondsToMiliseconds(expires_in),
+        maxAge: accessTokenMaxAge,
+      });
+      res.cookie('is_authenticated', 'true', {
+        maxAge: accessTokenMaxAge,
       });
 
-      res.redirect(`${process.env.FRONTEND_URL}`);
+      res.redirect(process.env.FRONTEND_URL);
     })
     .catch(({ response: { status, data } }) => {
       res.status(status).json(data);

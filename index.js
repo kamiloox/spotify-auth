@@ -8,14 +8,10 @@ const app = express();
 const port = 8080;
 
 app.use(cookieParser());
-app.use(cors({ credentials: true, origin: process.env.FRONTEND_URL }));
+app.use(cors({ credentials: true, origin: new URL(process.env.FRONTEND_URL).origin }));
 
 app.get('/', (req, res) => {
   res.send('<a href="/auth/login">login to spotify</a>');
-});
-
-app.get('/app', (req, res) => {
-  res.send('succedded in authorizing user');
 });
 
 app.use('/auth', authRouter);

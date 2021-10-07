@@ -15,12 +15,25 @@ module.exports = (req, res) => {
     'content-type': 'application/x-www-form-urlencoded',
   };
 
+  if (!req.query.refresh_token)
+    return res.json({
+      error: {
+        status: 403,
+        message: 'Request unauthorised',
+      },
+    });
+
   axios
     .post(baseURL, params.toString(), { headers })
     .then(({ data, status }) => {
+      const accessTokenMaxAge = secondsToMiliseconds(data.expires_in);
+
       res.cookie('access_token', data.access_token, {
         httpOnly: true,
-        maxAge: secondsToMiliseconds(data.expires_in),
+        maxAge: accessTokenMaxAge,
+      });
+      res.cookie('is_authenticated', 'true', {
+        maxAge: accessTokenMaxAge,
       });
 
       if (req.query.redirect_uri) res.redirect(req.query.redirect_uri);
