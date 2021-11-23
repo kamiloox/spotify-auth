@@ -15,7 +15,7 @@ module.exports = (req, res) => {
     'content-type': 'application/x-www-form-urlencoded',
   };
 
-  if (!req.query.refresh_token)
+  if (!req.cookies.refresh_token)
     return res.json({
       error: {
         status: 403,
