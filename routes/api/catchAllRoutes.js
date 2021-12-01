@@ -3,12 +3,12 @@ const axios = require('axios');
 module.exports = (req, res) => {
   const baseURL = 'https://api.spotify.com/v1';
 
-  console.log(req.url);
   axios({
     method: req.method,
     baseURL,
     url: req.url,
     params: req.query,
+    body: req.body,
     headers: {
       Authorization: res.locals.authHeader,
     },
