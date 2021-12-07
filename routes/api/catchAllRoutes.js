@@ -3,16 +3,20 @@ const axios = require('axios');
 module.exports = (req, res) => {
   const baseURL = 'https://api.spotify.com/v1';
 
-  axios({
+  const axiosConfig = {
     method: req.method,
     baseURL,
     url: req.url,
     params: req.query,
-    body: req.body,
     headers: {
       Authorization: res.locals.authHeader,
     },
-  })
+  };
+
+  const hasJSONBody = Object.keys(req.body).length >= 1;
+  if (hasJSONBody) axiosConfig.data = req.body;
+
+  axios(axiosConfig)
     .then(({ status, data }) => {
       res.status(status).json(data);
     })

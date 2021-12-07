@@ -32,9 +32,11 @@ module.exports = (req, res) => {
     },
   })
     .then(({ status, data }) => {
-      requestSeveralTracks(res, data.tracks, req.query?.market).then((newRes) => {
-        res.status(status).json(newRes.data.tracks);
-      });
+      if (data.tracks.length > 0)
+        requestSeveralTracks(res, data.tracks, req.query?.market).then((newRes) => {
+          res.status(status).json(newRes.data.tracks);
+        });
+      else res.status(status).json([]);
     })
     .catch(({ response: { status, data } }) => {
       res.status(status).json(data);
